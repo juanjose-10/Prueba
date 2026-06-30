@@ -62,4 +62,19 @@ export class TicketsService {
 
     await this.ticketRepository.remove(ticket);
   }
+
+  async updateStatus(id: string, status: string): Promise<Ticket> {
+  const ticket = await this.findOne(id);
+
+  ticket.status = status as any;
+
+  return await this.ticketRepository.save(ticket);
+}
+async assignTicket(id: string, assignedTo: string): Promise<Ticket> {
+  const ticket = await this.findOne(id);
+
+  ticket.assignedTo = assignedTo;
+
+  return await this.ticketRepository.save(ticket);
+}
 }
