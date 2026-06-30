@@ -1,7 +1,7 @@
 import { Injectable, NotFoundException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
-
+import { AutomationService } from '../automation/automation.service';
 import { Ticket } from './entities/ticket.entity';
 import { CreateTicketDto } from './dto/create-ticket.dto';
 import { UpdateTicketDto } from './dto/update-ticket.dto';
@@ -11,6 +11,7 @@ export class TicketsService {
   constructor(
     @InjectRepository(Ticket)
     private readonly ticketRepository: Repository<Ticket>,
+    private readonly automationService: AutomationService,
   ) {}
 
   async create(createTicketDto: CreateTicketDto): Promise<Ticket> {
@@ -75,6 +76,13 @@ async assignTicket(id: string, assignedTo: string): Promise<Ticket> {
 
   ticket.assignedTo = assignedTo;
 
-  return await this.ticketRepository.save(ticket);
+  const updatedTicket = await this.ticketRepository.save(ticket);
+
+  this.automationService.notifyAssignment(
+    updatedTicket.title,
+    updatedTicket.assignedTo,
+  );
+
+  return updatedTicket;
 }
 }
