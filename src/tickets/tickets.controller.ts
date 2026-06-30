@@ -30,6 +30,11 @@ findAll(@Query('status') status?: string) {
   return this.ticketsService.findAll(status);
 }
 
+@Get('dashboard')
+getDashboard() {
+  return this.ticketsService.getDashboard();
+}
+
   @Get(':id')
   findOne(@Param('id') id: string) {
     return this.ticketsService.findOne(id);

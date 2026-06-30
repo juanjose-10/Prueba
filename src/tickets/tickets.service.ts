@@ -85,4 +85,35 @@ async assignTicket(id: string, assignedTo: string): Promise<Ticket> {
 
   return updatedTicket;
 }
+async getDashboard() {
+  const tickets = await this.ticketRepository.find();
+
+  return {
+    total: tickets.length,
+
+    pending: tickets.filter(
+      (ticket) => ticket.status === 'pending',
+    ).length,
+
+    inProgress: tickets.filter(
+      (ticket) => ticket.status === 'in_progress',
+    ).length,
+
+    resolved: tickets.filter(
+      (ticket) => ticket.status === 'resolved',
+    ).length,
+
+    highPriority: tickets.filter(
+      (ticket) => ticket.priority === 'high',
+    ).length,
+
+    mediumPriority: tickets.filter(
+      (ticket) => ticket.priority === 'medium',
+    ).length,
+
+    lowPriority: tickets.filter(
+      (ticket) => ticket.priority === 'low',
+    ).length,
+  };
+}
 }
